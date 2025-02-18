@@ -1,16 +1,18 @@
+import { ICell } from "@/pages/caro/Caro";
+
 interface CellProps {
-  value: string | null;
+  cell: ICell;
   onClick: () => void;
 }
 
 const Cell = ({
-  value,
+  cell,
   onClick
 }: CellProps) => {
   return (
-    <div className="caro-cell" onClick={onClick}>
+    <div className={`caro-cell ${cell.isWin ? 'win' : ''}`} onClick={onClick}>
       <span>
-        {value}
+        {cell.value}
       </span>
     </div>
   )

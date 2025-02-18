@@ -1,9 +1,10 @@
+import { ICell } from "@/pages/caro/Caro";
 import Cell from "@/pages/caro/components/Cell";
 import { useMemo } from "react";
 
 interface BoardProps {
   loading: boolean;
-  board: (string | null)[][];
+  board: ICell[][];
   onClick: (row: number, col: number) => void;
 }
 
@@ -25,7 +26,7 @@ const Board = ({
             <div className="caro-board__row" key={rowIndex}>
               {
                 row.map((cell, colIndex) =>
-                  <Cell value={cell} onClick={() => onClick(rowIndex, colIndex)} key={colIndex} />
+                  <Cell cell={cell} onClick={() => onClick(rowIndex, colIndex)} key={colIndex} />
                 )
               }
             </div>
