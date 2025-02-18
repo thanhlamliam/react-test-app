@@ -1,0 +1,219 @@
+{
+  "vertices": [
+      {
+          "id": "ZIM222"
+      },
+      {
+          "id": "ZIM62"
+      },
+      {
+          "id": "ZIM63"
+      },
+      {
+          "id": "ZIM23"
+      },
+      {
+          "id": "MT_MM1518_ERP"
+      },
+      {
+          "id": "ZIM21"
+      },
+      {
+          "id": "ZPUR_RFC_519"
+      },
+      {
+          "id": "ZIM22"
+      },
+      {
+          "id": "ZMM_BCD_AXXX_PO"
+      },
+      {
+          "id": "ZIMR69"
+      },
+      {
+          "id": "ZMM_IWMS_BL_01"
+      },
+      {
+          "id": "ZIM45"
+      },
+      {
+          "id": "MT_MM0054_ERP"
+      },
+      {
+          "id": "MT_MM2011_ERP"
+      },
+      {
+          "id": "MT_MM2015_ERP"
+      },
+      {
+          "id": "MT_MM2053_ERP"
+      },
+      {
+          "id": "MT_MM2016_ERP"
+      },
+      {
+          "id": "ZIME04"
+      },
+      {
+          "id": "MT_MM1502_ERP"
+      }
+  ],
+  "edges": [
+      {
+          "source": "ZIM222",
+          "target": "ZIM23"
+      },
+      {
+          "source": "ZIM62",
+          "target": "ZIM63"
+      },
+      {
+          "source": "ZIM63",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM23",
+          "target": "ZIM62"
+      },
+      {
+          "source": "MT_MM1518_ERP",
+          "target": "ZIM62"
+      },
+      {
+          "source": "ZIM62",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM21",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM222",
+          "target": "ZIM62"
+      },
+      {
+          "source": "ZIM62",
+          "target": "ZIM23"
+      },
+      {
+          "source": "ZIM63",
+          "target": "ZIM23"
+      },
+      {
+          "source": "ZIM23",
+          "target": "MT_MM2011_ERP"
+      },
+      {
+          "source": "MT_MM1518_ERP",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM23",
+          "target": "MT_MM2015_ERP"
+      },
+      {
+          "source": "ZPUR_RFC_519",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM21",
+          "target": "ZIM62"
+      },
+      {
+          "source": "ZIM23",
+          "target": "ZIM222"
+      },
+      {
+          "source": "MT_MM1518_ERP",
+          "target": "ZIM23"
+      },
+      {
+          "source": "ZIM222",
+          "target": "MT_MM1518_ERP"
+      },
+      {
+          "source": "ZIM22",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM23",
+          "target": "MT_MM1518_ERP"
+      },
+      {
+          "source": "ZIM23",
+          "target": "MT_MM2053_ERP"
+      },
+      {
+          "source": "ZIM23",
+          "target": "MT_MM2016_ERP"
+      },
+      {
+          "source": "ZMM_BCD_AXXX_PO",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM22",
+          "target": "ZIM62"
+      },
+      {
+          "source": "ZIM222",
+          "target": "ZIME04"
+      },
+      {
+          "source": "ZIM222",
+          "target": "ZIMR69"
+      },
+      {
+          "source": "ZIMR69",
+          "target": "MT_MM2011_ERP"
+      },
+      {
+          "source": "ZIM23",
+          "target": "ZIM45"
+      },
+      {
+          "source": "ZIM23",
+          "target": "ZIM63"
+      },
+      {
+          "source": "ZMM_IWMS_BL_01",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM222",
+          "target": "MT_MM1502_ERP"
+      },
+      {
+          "source": "ZIM45",
+          "target": "MT_MM2053_ERP"
+      },
+      {
+          "source": "ZMM_BCD_AXXX_PO",
+          "target": "ZIM21"
+      },
+      {
+          "source": "ZIMR69",
+          "target": "MT_MM1518_ERP"
+      },
+      {
+          "source": "ZIM62",
+          "target": "MT_MM2015_ERP"
+      },
+      {
+          "source": "MT_MM0054_ERP",
+          "target": "ZIM222"
+      },
+      {
+          "source": "ZIM222",
+          "target": "ZIM63"
+      },
+      {
+          "source": "ZIM63",
+          "target": "ZIM62"
+      },
+      {
+          "source": "ZIMR69",
+          "target": "MT_MM1502_ERP"
+      }
+  ]
+}

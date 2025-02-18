@@ -1,0 +1,12 @@
+// Ant Spint
+.ant-spin-nested-loading {
+  height: 100%;
+
+  .ant-spin-container {
+    height: 100%;
+  }
+}
+
+:where(.css-dev-only-do-not-override-ccdg5a).ant-spin-nested-loading >div>.ant-spin {
+  max-height: 100%;
+}

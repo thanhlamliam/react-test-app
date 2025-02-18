@@ -1,0 +1,39 @@
+.caro {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+
+  &-board {
+    aspect-ratio: 1;
+    height: 90%;
+    border: 2px solid #000000;
+    background: #ffffff;
+    overflow: hidden;
+
+    &__row {
+      display: contents;
+    }
+  }
+
+  &-cell {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    background: #ffffff;
+    cursor: pointer;
+
+    span {
+      font-size: 16px;
+      font-weight: medium;
+    }
+
+    &:hover {
+      background: #eee;
+    }
+  }
+}
