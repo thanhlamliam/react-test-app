@@ -1,7 +1,8 @@
 import Board from "@/pages/caro/components/Board";
 import "./caro.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, InputNumber } from "antd";
+import Fireworks, { FireworksHandlers } from "@fireworks-js/react";
 
 export interface ICell {
   value: string | null;
@@ -23,6 +24,8 @@ const Caro = () => {
   const [isXNext, setIsXNext] = useState<boolean>(false);
   const [winner, setWinner] = useState<string | null>(null);
   const [winningLine, setWinningLine] = useState<number[][]>([]);
+  const fireworkRef = useRef<FireworksHandlers>(null);
+
   const directions = [
     [
       [0, -1],
@@ -122,7 +125,59 @@ const Caro = () => {
       })
     })
     setBoard(newBoard);
-  }, [winningLine])
+  }, [winningLine]);
+
+  useEffect(() => {
+    fireworkRef.current?.updateOptions({
+      autoresize: true,
+      opacity: 0.5,
+      acceleration: 1.05,
+      friction: 0.97,
+      gravity: 1.5,
+      particles: 50,
+      traceLength: 3,
+      traceSpeed: 10,
+      explosion: 5,
+      intensity: 30,
+      flickering: 50,
+      lineStyle: 'round',
+      hue: {
+        min: 0,
+        max: 360
+      },
+      delay: {
+        min: 30,
+        max: 60
+      },
+      rocketsPoint: {
+        min: 50,
+        max: 50
+      },
+      lineWidth: {
+        explosion: {
+          min: 1,
+          max: 3
+        },
+        trace: {
+          min: 1,
+          max: 2
+        }
+      },
+      brightness: {
+        min: 50,
+        max: 80
+      },
+      decay: {
+        min: 0.015,
+        max: 0.03
+      },
+      mouse: {
+        click: false,
+        move: false,
+        max: 1
+      }
+    });
+  }, []);
 
   return (
     <div className="caro">
@@ -148,6 +203,13 @@ const Caro = () => {
       </p>
 
       <Board loading={loading} board={board} onClick={handleClick} />
+
+      {
+        winner && <Fireworks
+          className="firework"
+          ref={fireworkRef}
+        />
+      }
     </div>
   )
 }
