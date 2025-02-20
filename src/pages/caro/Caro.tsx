@@ -47,14 +47,16 @@ const Caro = () => {
 
   function checkWinner(board: ICell[][], row: number, col: number) {
     let count = 1;
-    let winningArr = [];
+    let winningArr = [], preventArr = [];
     let currentUser = board[row][col].value;
     if (!currentUser) return;
 
     for (const direction of directions) {
       count = 1;
+      winningArr = [];
+      preventArr = [];
+
       for (const [dx, dy] of direction) {
-        winningArr = [];
         winningArr.push([row, col]);
         let rowTemp = row + dx;
         let colTemp = col + dy;
@@ -63,22 +65,31 @@ const Caro = () => {
           rowTemp >= 0 &&
           rowTemp < boardSize &&
           colTemp >= 0 &&
-          colTemp < boardSize &&
-          currentUser === board[rowTemp][colTemp].value
+          colTemp < boardSize
         ) {
-          winningArr.push([rowTemp, colTemp]);
-          count++;
-          rowTemp = rowTemp + dx;
-          colTemp = colTemp + dy;
-        }
+          if (currentUser && board[rowTemp][colTemp].value && currentUser !== board[rowTemp][colTemp].value) {
+            preventArr.push([rowTemp, colTemp]);
+            break;
+          }
 
-        if (count >= 5) {
-          setWinningLine(winningArr);
-          return true;
+          if (currentUser === board[rowTemp][colTemp].value) {
+            winningArr.push([rowTemp, colTemp]);
+            count++;
+            rowTemp = rowTemp + dx;
+            colTemp = colTemp + dy;
+          } else {
+            break;
+          }
         }
+      }
+
+      if ((count >= 5 && preventArr.length === 1) || (count === 4 && preventArr.length === 0)) {
+        setWinningLine(winningArr);
+        return true;
       }
     }
 
+    setWinningLine([]);
     return false;
   }
 
@@ -91,8 +102,10 @@ const Caro = () => {
           isWin: false
         }))
       ));
-    setWinner(null);
     setIsXNext(false);
+    setWinner(null);
+    setWinningLine([]);
+
     const timeoutId = setTimeout(() => setLoading(false), 300);
     return () => clearTimeout(timeoutId);
   }
