@@ -3,6 +3,9 @@ import "./caro.scss";
 import { useEffect, useRef, useState } from "react";
 import { Button, InputNumber } from "antd";
 import Fireworks, { FireworksHandlers } from "@fireworks-js/react";
+import { RedoOutlined, UndoOutlined } from "@ant-design/icons";
+
+const MAX_UNDO = 3
 
 export interface ICell {
   value: string | null;
@@ -10,6 +13,8 @@ export interface ICell {
 }
 
 const Caro = () => {
+  const fireworkRef = useRef<FireworksHandlers>(null);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [boardSize, setBoardSize] = useState<number>(24);
   const [size, setSize] = useState<number>(boardSize);
@@ -24,7 +29,8 @@ const Caro = () => {
   const [isXNext, setIsXNext] = useState<boolean>(false);
   const [winner, setWinner] = useState<string | null>(null);
   const [winningLine, setWinningLine] = useState<number[][]>([]);
-  const fireworkRef = useRef<FireworksHandlers>(null);
+  const [history, setHistory] = useState<number[][]>([]);
+  const [undoTimes, setUndoTimes] = useState<number>(0);
 
   const directions = [
     [
@@ -45,6 +51,7 @@ const Caro = () => {
     ] // Cheo trai
   ]
 
+  // Utils
   function checkWinner(board: ICell[][], row: number, col: number) {
     let count = 1;
     let winningArr = [], preventArr = [];
@@ -93,6 +100,7 @@ const Caro = () => {
     return false;
   }
 
+  // Actions
   function handleCreateNewGame(size: number) {
     setLoading(true);
     setBoard(
@@ -110,9 +118,50 @@ const Caro = () => {
     return () => clearTimeout(timeoutId);
   }
 
+  function handleUndo() {
+    if (undoTimes === 0 || history.length === 0) return;
+
+    const position = history[history.length - undoTimes];
+    if (position?.[0]) {
+      const newBoard = board.map((row, rowIndex) => {
+        return row.map((col, colIndex) => {
+          if (rowIndex === position[0] && colIndex === position[1]) {
+            return { ...col, value: null };
+          }
+          return col;
+        })
+      })
+
+      setUndoTimes(undoTimes - 1);
+      setBoard(newBoard);
+      setIsXNext((prev) => !prev);
+    }
+  }
+
+  function handleRedo() {
+    if (undoTimes === MAX_UNDO || history.length === MAX_UNDO) return;
+
+    const position = history[undoTimes + 1];
+    if (position?.[0]) {
+      const newBoard = board.map((row, rowIndex) => {
+        return row.map((col, colIndex) => {
+          if (rowIndex === position[0] && colIndex === position[1]) {
+            return { ...col, value: null };
+          }
+          return col;
+        })
+      })
+
+      setUndoTimes(undoTimes + 1);
+      setBoard(newBoard);
+      setIsXNext((prev) => !prev);
+    }
+  }
+
   function handleClick(row: number, col: number) {
     if (board[row][col].value || winner) return;
 
+    // Init new board
     const newBoard = board.map((row) => [...row]);
     newBoard[row][col].value = isXNext ? "X" : "O";
 
@@ -121,6 +170,18 @@ const Caro = () => {
     }
 
     setBoard(newBoard);
+
+    // Set max 3 undo and redo
+    const newHistory = [...history];
+    if (history.length === 3) {
+      newHistory.shift();
+    }
+    newHistory.push([row, col]);
+
+    setUndoTimes((prev) => prev === MAX_UNDO ? prev : prev + 1);
+    setHistory(newHistory);
+
+    // Set next player
     setIsXNext((prev) => !prev);
   }
 
@@ -211,9 +272,21 @@ const Caro = () => {
         <Button type="primary" onClick={() => handleCreateNewGame(boardSize)}>New Game</Button>
       </div>
 
-      <p className={`p-2 rounded-md ${winner ? 'bg-[#d9ffd6]' : ''}`}>
-        {winner ? `Winner: ${winner}` : `Next player is: ${isXNext ? "X" : "O"}`}
-      </p>
+      <div className="flex items-center gap-2">
+        <p className={`p-2 rounded-md ${winner ? 'bg-[#d9ffd6]' : ''}`}>
+          {winner ? `Winner: ${winner}` : `Next player is: ${isXNext ? "X" : "O"}`}
+        </p>
+
+        <Button
+          title="Undo"
+          icon={<UndoOutlined />}
+          onClick={handleUndo}
+        />
+
+        <Button title="Redo" icon={
+          <RedoOutlined />
+        } />
+      </div>
 
       <Board loading={loading} board={board} onClick={handleClick} />
 
