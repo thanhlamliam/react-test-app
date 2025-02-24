@@ -119,10 +119,10 @@ const Caro = () => {
   }
 
   function handleUndo() {
-    if (undoTimes === 0 || history.length === 0) return;
+    if (undoTimes === 0) return;
 
-    const position = history[history.length - undoTimes];
-    if (position?.[0]) {
+    const position = history[undoTimes - 1];
+    if (position?.[0] >= 0) {
       const newBoard = board.map((row, rowIndex) => {
         return row.map((col, colIndex) => {
           if (rowIndex === position[0] && colIndex === position[1]) {
@@ -139,14 +139,15 @@ const Caro = () => {
   }
 
   function handleRedo() {
-    if (undoTimes === MAX_UNDO || history.length === MAX_UNDO) return;
+    if (undoTimes === MAX_UNDO) return;
+    console.log("his", history, undoTimes)
 
-    const position = history[undoTimes + 1];
-    if (position?.[0]) {
+    const position = history[undoTimes];
+    if (position?.[0] >= 0) {
       const newBoard = board.map((row, rowIndex) => {
         return row.map((col, colIndex) => {
           if (rowIndex === position[0] && colIndex === position[1]) {
-            return { ...col, value: null };
+            return { ...col, value: isXNext ? "X" : "O" };
           }
           return col;
         })
@@ -283,12 +284,16 @@ const Caro = () => {
           onClick={handleUndo}
         />
 
-        <Button title="Redo" icon={
-          <RedoOutlined />
-        } />
+        {/* <Button
+          title="Redo"
+          icon={<RedoOutlined />}
+          onClick={handleRedo}
+        /> */}
       </div>
 
-      <Board loading={loading} board={board} onClick={handleClick} />
+      <div className="flex items-center justify-center p-4 h-[90%] aspect-square border border-solid border-black shadow-2xl bg-white">
+        <Board loading={loading} board={board} onClick={handleClick} />
+      </div>
 
       {
         winner && <Fireworks
