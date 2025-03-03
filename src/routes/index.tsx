@@ -1,6 +1,8 @@
 import AppLayout from '@/layouts/AppLayout';
 import About from '@/pages/about/About';
 import Caro from '@/pages/caro/Caro';
+import CaroWithSocket from '@/pages/caro/CaroWithSocket';
+import { SocketProvider } from '@/pages/context/SocketContext';
 import Dashboard from '@/pages/dashboard/Dashboard';
 import Flow from '@/pages/flow/Flow';
 import Library from '@/pages/library/Library';
@@ -35,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: 'caro',
         element: <Caro />
+      },
+      {
+        path: 'caro-friends',
+        element: <CaroWithSocket />
       }
     ]
   }
