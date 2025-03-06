@@ -8,13 +8,14 @@ interface SocketContextType {
   disconnectSocket: () => void;
 }
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   const connectSocket = () => {
-    const newSocket = io('http://10.63.161.37:5050', {
+    const newSocket = io(SOCKET_URL, {
       transports: ["websocket"]
     });
     setSocket(newSocket);

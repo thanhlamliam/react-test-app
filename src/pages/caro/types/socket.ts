@@ -1,3 +1,5 @@
+import { ICell } from "@/pages/caro/Caro";
+
 // src/types/socket.ts
 export interface Player {
   id: string;
@@ -12,5 +14,5 @@ export interface GameState {
 
 export interface GameOverData {
   winner: string;
-  board: string[][];
+  board: ICell[][];
 }

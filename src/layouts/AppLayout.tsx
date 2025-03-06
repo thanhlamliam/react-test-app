@@ -49,7 +49,7 @@ export default function AppLayout() {
     {
       icon: <NumberOutlined style={{ fontSize: 24 }} />,
       label: 'Caro',
-      path: '/caro'
+      path: '/caro-friends'
     },
   ]
 

@@ -1,12 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Player, GameState, GameOverData } from '@/pages/caro/types/socket';
+import React, { useEffect, useRef, useState } from 'react';
+import { Player, GameOverData } from '@/pages/caro/types/socket';
 import { useSocket } from '@/pages/context/SocketContext';
 import { Button, Flex, Form, Input } from 'antd';
+import Cell from '@/pages/caro/components/Cell';
+import { ICell } from '@/pages/caro/Caro';
+import "./caro.scss";
+import Fireworks, { FireworksHandlers } from '@fireworks-js/react';
 
 const CaroWithSocket: React.FC = () => {
+  const fireworkRef = useRef<FireworksHandlers>(null);
+
   const { socket, connectSocket } = useSocket();
   const [gameId, setGameId] = useState<string | null>(null);
-  const [board, setBoard] = useState<string[][]>(Array(24).fill('').map(() => Array(24).fill('')));
+  const [board, setBoard] = useState<ICell[][]>(
+    Array.from({ length: 24 }, () =>
+      Array.from({ length: 24 }, () => ({
+        value: null,
+        isWin: false
+      }))
+    )
+  );
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentTurn, setCurrentTurn] = useState<string>('');
   const [winner, setWinner] = useState<string | null>(null);
@@ -44,7 +57,7 @@ const CaroWithSocket: React.FC = () => {
       setPlayers(players);
     });
 
-    socket.on('boardUpdated', (newBoard: string[][]) => {
+    socket.on('boardUpdated', (newBoard: ICell[][]) => {
       setBoard(newBoard);
     });
 
@@ -98,62 +111,118 @@ const CaroWithSocket: React.FC = () => {
     }
   };
 
-  const handleMove = (x: number, y: number) => {
+  const handleMove = (row: number, col: number) => {
     if (socket && gameId && !winner && currentTurn === socket.id) {
-      socket.emit('makeMove', gameId, x, y);
+      socket.emit('makeMove', gameId, row, col);
     }
   };
 
-  return (
-    <div>
-      <h1>Caro Game</h1>
-      {!gameId ? (
-        <Flex gap={16} vertical>
-          <Button className='w-fit' type='primary' onClick={handleCreateGame}>Create Game</Button>
+  useEffect(() => {
+    fireworkRef.current?.updateOptions({
+      autoresize: true,
+      opacity: 0.5,
+      acceleration: 1.05,
+      friction: 0.97,
+      gravity: 1.5,
+      particles: 50,
+      traceLength: 3,
+      traceSpeed: 10,
+      explosion: 5,
+      intensity: 30,
+      flickering: 50,
+      lineStyle: 'round',
+      hue: {
+        min: 0,
+        max: 360
+      },
+      delay: {
+        min: 30,
+        max: 60
+      },
+      rocketsPoint: {
+        min: 50,
+        max: 50
+      },
+      lineWidth: {
+        explosion: {
+          min: 1,
+          max: 3
+        },
+        trace: {
+          min: 1,
+          max: 2
+        }
+      },
+      brightness: {
+        min: 50,
+        max: 80
+      },
+      decay: {
+        min: 0.015,
+        max: 0.03
+      },
+      mouse: {
+        click: false,
+        move: false,
+        max: 1
+      }
+    });
+  }, []);
 
-          <Form onFinish={handleJoinGame}>
-            <Flex gap={8}>
-              <Form.Item name="gameId">
-                <Input type="text" placeholder="Enter Game ID" />
-              </Form.Item>
-              <Button htmlType='submit'>Join Game</Button>
-            </Flex>
-          </Form>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </Flex>
-      ) : (
-        <>
-          <p>Game ID: {gameId}</p>
-          <p>Your ID: {socket?.id}</p>
-          <p>Current Turn: {currentTurn}</p>
-          <p>Players: {players.map((p) => `${p.id} (${p.mark})`).join(', ')}</p>
-          {winner && <p>Winner: {winner}</p>}
-          <div>
-            {board.map((row, y) => (
-              <div key={y} style={{ display: 'flex' }}>
-                {row.map((cell, x) => (
-                  <button
-                    key={x}
-                    onClick={() => handleMove(x, y)}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      margin: '1px',
-                      background: cell ? '#ddd' : '#fff',
-                    }}
-                    disabled={!!cell || currentTurn !== socket?.id || !!winner}
-                  >
-                    {cell}
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </>
-      )}
+  return (
+    <div className="caro">
+      <h1>Caro Game</h1>
+      {
+        !gameId ? (
+          <Flex gap={16} vertical>
+            <Button className='w-fit' type='primary' onClick={handleCreateGame}>Create Game</Button>
+
+            <Form onFinish={handleJoinGame}>
+              <Flex gap={8}>
+                <Form.Item name="gameId">
+                  <Input type="text" placeholder="Enter Game ID" />
+                </Form.Item>
+                <Button htmlType='submit'>Join Game</Button>
+              </Flex>
+            </Form>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+          </Flex>
+        ) : (
+          <>
+            <p>Game ID: {gameId}</p>
+            <p>Your ID: {socket?.id}</p>
+            <p>Current Turn: {currentTurn}</p>
+            <p>Players: {players.map((p) => `${p.id} (${p.mark})`).join(', ')}</p>
+            {winner && <p>Winner: {winner}</p>}
+            <div
+              className="caro-board grid"
+              style={{
+                gridTemplateColumns: `repeat(${board.length}, 1fr)`,
+                cursor: currentTurn !== socket?.id || !!winner ? 'not-allowed' : 'none'
+              }}
+            >
+              {board.map((row, rowIndex) =>
+                <div className="caro-board__row" key={rowIndex}>
+                  {
+                    row.map((cell, colIndex) =>
+                      <Cell cell={cell} onClick={() => handleMove(rowIndex, colIndex)} key={colIndex} />
+                    )
+                  }
+                </div>
+              )}
+            </div>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {
+              winner && <Fireworks
+                className="firework"
+                ref={fireworkRef}
+              />
+            }
+          </>
+        )
+      }
     </div>
-  );
+  )
 };
 
 export default CaroWithSocket;
